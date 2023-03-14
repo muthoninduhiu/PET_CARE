@@ -1,0 +1,14 @@
+CREATE TABLE pet (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    breed VARCHAR(100) NOT NULL,
+    age INTEGER NOT NULL,
+    owner VARCHAR(100) NOT NULL
+);
+
+CREATE TABLE appointment (
+    id SERIAL PRIMARY KEY,
+    pet_name VARCHAR(100) NOT NULL,
+    service VARCHAR(100) NOT NULL,
+    date DATE NOT NULL
+);

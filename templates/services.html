@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Pet Care System - Services</title>
+	<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+	<header>
+		<nav>
+			<ul>
+				<li><a href="/">Home</a></li>
+				<li><a href="/about">About</a></li>
+				<li><a href="/services">Services</a></li>
+				<li><a href="/contact">Contact</a></li>
+			</ul>
+			<button class="menu-toggle">&#9776;</button>
+		</nav>
+	</header>
+
+	<main>
+		<section>
+			<h1>Our Services</h1>
+			<ul>
+				<li>Dog walking</li>
+				<li>Pet sitting</li>
+				<li>Pet grooming</li>
+				<li>Veterinary care</li>
+			</ul>
+		</section>
+	</main>
+
+	<footer>
+		<p>&copy; 2023 Pet Care System</p>
+	</footer>
+
+	<script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
