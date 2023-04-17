@@ -30,3 +30,19 @@ with app.app_context():
         species_id = db.Column(db.Integer, db.ForeignKey('species.id'))
         species = db.relationship('Species', backref='pet_details')
 
+    class OwnerDetails(db.Model):
+        __tablename__ = 'owner_details'
+        id = db.Column(db.Integer, primary_key=True)
+        firstname = db.Column(db.String(120))
+        lastname = db.Column(db.String(120))
+        phone_number = db.Column(db.String(120))
+        email = db.Column(db.String(120))
+        city = db.Column(db.String(120))
+
+    class PetOwner(db.Model):
+        __tablename__ = 'pet_owner'
+        id = db.Column(db.Integer, primary_key=True)
+        owner_id = db.Column(db.Integer, db.ForeignKey('owner_details.id'))
+        pet_id = db.Column(db.Integer, db.ForeignKey('pet_details.id'))
+        pet_details = db.relationship('PetDetails', backref='pet_owner')
+        owner_details = db.relationship('OwnerDetails', backref='pet_owner')
