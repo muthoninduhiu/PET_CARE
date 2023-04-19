@@ -30,6 +30,7 @@ with app.app_context():
         species_id = db.Column(db.Integer, db.ForeignKey('species.id'))
         species = db.relationship('Species', backref='pet_details')
 
+
     class OwnerDetails(db.Model):
         __tablename__ = 'owner_details'
         id = db.Column(db.Integer, primary_key=True)
@@ -39,6 +40,7 @@ with app.app_context():
         email = db.Column(db.String(120))
         city = db.Column(db.String(120))
 
+
     class PetOwner(db.Model):
         __tablename__ = 'pet_owner'
         id = db.Column(db.Integer, primary_key=True)
@@ -46,3 +48,44 @@ with app.app_context():
         pet_id = db.Column(db.Integer, db.ForeignKey('pet_details.id'))
         pet_details = db.relationship('PetDetails', backref='pet_owner')
         owner_details = db.relationship('OwnerDetails', backref='pet_owner')
+
+
+    class ServiceDetails(db.Model):
+        # edit table to have duration as a whole integer to represent minutes service takes
+        __tablename__ = 'service_details'
+        id = db.Column(db.Integer, primary_key=True)
+        service_name = db.Column(db.String(120))
+        service_cost = db.Column(db.Numeric(10, 2))
+        duration = db.Column(db.Integer)
+
+
+    class ServiceProviderDetails(db.Model):
+        __tablename__ = 'service_provider'
+        id = db.Column(db.Integer, primary_key=True)
+        name = db.Column(db.String(255))
+        phone_number = db.Column(db.String(20))
+        city = db.Column(db.String(50))
+        country = db.Column(db.String(50))
+        email = db.Column(db.String(50))
+        available = db.Column(db.Boolean)
+        pay_rate = db.Column(db.Numeric(4, 2))
+
+
+    class ServiceProviderSkills(db.Model):
+        __tablename__ = 'service_provider_skills'
+        service_id = db.Column(db.Integer, db.ForeignKey('service_details.id'), primary_key=True)
+        service_provider_id = db.Column(db.Integer, db.ForeignKey('service_provider.id'), primary_key=True)
+        service = db.relationship('ServiceDetails', backref='service_providers')
+        service_provider = db.relationship('ServiceProviderDetails', backref='services')
+
+
+    class BookAppointment(db.Model):
+        __tablename__ = 'book_appointment'
+        apt_id = db.Column(db.Integer, primary_key=True)
+        service_provider_id = db.Column(db.Integer, db.ForeignKey('service_provider.id'))
+        pet_id = db.Column(db.Integer, db.ForeignKey('pet_details.id'))
+        service_id = db.Column(db.Integer, db.ForeignKey('service_details.id'))
+        appointment_date = db.Column(db.Date)
+        service_provider = db.relationship('ServiceProviderDetails', backref='appointments')
+        pet = db.relationship('PetDetails', backref='appointments')
+        service = db.relationship('ServiceDetails', backref='appointments')
