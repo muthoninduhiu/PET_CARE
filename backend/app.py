@@ -17,9 +17,7 @@ def get_pet_details():
             'life_expectancy': str(species.life_expectancy) + ' Years',
             'birth_date': pet_detail.birth_date.strftime('%Y-%m-%d'),
             'gender': pet_detail.gender,
-            'first_name': owner_details.firstname if owner_details else None,
-            # TODO: add pet owner details here
-
+            'owner_name': owner_details.firstname + owner_details.lastname if owner_details else None,
         }
         results.append(pet_detail_data)
     return jsonify(results)
