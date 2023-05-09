@@ -5,6 +5,8 @@ from flask import jsonify, request
 from models import app, Species, PetDetails, PetOwner, db
 
 
+# set FLASK_RUN_PORT = ''
+
 @app.route('/api/species', methods=['GET'])
 def get_species():
     species_available = Species.query.all()
@@ -58,7 +60,7 @@ def edit_species(species_id):
     except KeyError as e:
         db.session.rollback()
         return jsonify({'message': f'Missing key: {e.args[0]}'}), 400
-    except:
+    finally:
         db.session.rollback()
         return jsonify({'message': 'Failed to update pet details'}), 500
 
@@ -155,6 +157,6 @@ def edit_pet(pet_id):
     except KeyError as e:
         db.session.rollback()
         return jsonify({'message': f'Missing key: {e.args[0]}'}), 400
-    except:
+    finally:
         db.session.rollback()
         return jsonify({'message': 'Failed to update pet details'}), 500
