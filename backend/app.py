@@ -164,12 +164,61 @@ def edit_pet(pet_id):
 
 @app.route('/api/appointments', methods=['GET'])
 def get_appointments():
-    appointments = BookAppointment.query.all()
+    appointments = db.session.query(
+        BookAppointment.apt_id,
+        ServiceProviderDetails.name,
+        ServiceDetails.service_name,
+        BookAppointment.appointment_date
+    ).join(
+        ServiceProviderDetails,
+        BookAppointment.service_provider_id == ServiceProviderDetails.id
+    ).join(
+        ServiceDetails,
+        BookAppointment.service_id == ServiceDetails.id
+    ).all()
+
     results = []
-    for appointment in appointments:
-
+    for apt_id, provider_name, service_name, appointment_date in appointments:
         appointment_data = {
-
+            'apt_id': apt_id,
+            'provider_name': provider_name,
+            'service_name': service_name,
+            'appointment_date': appointment_date.isoformat()
         }
         results.append(appointment_data)
+
     return jsonify(results)
+
+
+@app.route('/api/appointments', methods=['POST'])
+def book_appointment():
+    # Extract data from request
+    data = request.get_json()
+    service_provider_name = data.get('service_provider_name')
+    service_name = data.get('service_name')
+    pet_id = data.get('pet_id')
+    appointment_date = data.get('appointment_date')
+
+    # Query database to get service provider and service details
+    service_provider = ServiceProviderDetails.query.filter_by(name=service_provider_name).first()
+    service = ServiceDetails.query.filter_by(service_name=service_name).first()
+
+    # Create new appointment record
+    appointment_details = BookAppointment(
+        service_provider_id=service_provider.id,
+        pet_id=pet_id,
+        service_id=service.id,
+        appointment_date=appointment_date
+    )
+    db.session.add(appointment_details)
+    db.session.commit()
+
+    # Return response with new appointment details
+    response = {
+        'appointment_id': appointment_details.apt_id,
+        'service_provider_name': appointment_details.service_provider.name,
+        'service_name': appointment_details.service.service_name,
+        'pet_id': appointment_details.pet_id,
+        'appointment_date': appointment_details.appointment_date.strftime('%Y-%m-%d')
+    }
+    return jsonify(response), 201
