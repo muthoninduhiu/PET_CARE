@@ -48,6 +48,8 @@ with app.app_context():
         pet_id = db.Column(db.Integer, db.ForeignKey('pet_details.id'))
         pet_details = db.relationship('PetDetails', backref='pet_owner')
         owner_details = db.relationship('OwnerDetails', backref='pet_owner')
+        vaccination_date = db.Column(db.Date)
+        vaccine_type = db.Column(db.String(50))
 
 
     class ServiceDetails(db.Model):
@@ -72,8 +74,11 @@ with app.app_context():
 
     class ServiceProviderSkills(db.Model):
         __tablename__ = 'service_provider_skills'
-        service_id = db.Column(db.Integer, db.ForeignKey('service_details.id'), primary_key=True)
-        service_provider_id = db.Column(db.Integer, db.ForeignKey('service_provider.id'), primary_key=True)
+        id = db.Column(db.Integer, primary_key=True)
+        service_id = db.Column(db.Integer, db.ForeignKey('service_details.id'))
+        service_provider_id = db.Column(db.Integer, db.ForeignKey('service_provider.id'))
+        rating = db.Column(db.Integer)
+        feedback = db.Column(db.String(255))
         service = db.relationship('ServiceDetails', backref='service_providers')
         service_provider = db.relationship('ServiceProviderDetails', backref='services')
 
