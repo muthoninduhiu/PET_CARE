@@ -2,7 +2,8 @@ from datetime import datetime
 
 from flask import jsonify, request
 
-from models import app, Species, PetDetails, PetOwner, db, ServiceDetails, ServiceProviderDetails, BookAppointment
+from models import app, Species, PetDetails, PetOwner, db, ServiceDetails, ServiceProviderDetails, BookAppointment, \
+    ServiceProviderSkills
 
 
 # set FLASK_RUN_PORT = ''
@@ -162,6 +163,66 @@ def edit_pet(pet_id):
         return jsonify({'message': 'Failed to update pet details'}), 500
 
 
+# add services
+@app.route('/api/service_provider', methods=['POST'])
+def add_service_provider():
+    data = request.json
+
+    # Extract service provider details from the request data
+    name = data.get('name')
+    phone_number = data.get('phone_number')
+    city = data.get('city')
+    country = data.get('country')
+    email = data.get('email')
+    available = data.get('available')
+    pay_rate = data.get('pay_rate')
+
+    # Create a new service provider object and add it to the database
+    service_provider = ServiceProviderDetails(name=name, phone_number=phone_number, city=city, country=country,
+                                              email=email, available=available, pay_rate=pay_rate)
+    db.session.add(service_provider)
+    db.session.commit()
+
+    # Return a response with the ID of the new service provider
+    return jsonify({'id': service_provider.id}), 201
+
+
+# add service provider
+@app.route('/api/service_details', methods=['POST'])
+def add_service_details():
+    data = request.json
+
+    # Extract service details from the request data
+    service_name = data.get('service_name')
+    service_cost = data.get('service_cost')
+    duration = data.get('duration')
+
+    # Create a new service details object and add it to the database
+    service_details = ServiceDetails(service_name=service_name, service_cost=service_cost, duration=duration)
+    db.session.add(service_details)
+    db.session.commit()
+
+    # Return a response with the ID of the new service details
+    return jsonify({'id': service_details.id}), 201
+
+
+@app.route('/api/service_details', methods=['GET'])
+def get_service_details():
+    service_details = ServiceDetails.query.all()
+
+    results = []
+    for service in service_details:
+        service_provider = ServiceProviderDetails.query.filter_by(id=service.id).first()
+        service_data = {
+            'service_name': service.service_name,
+            'duration': service.duration,
+            'cost': service.service_cost,
+            'service_provider_name': service_provider.name
+        }
+        results.append(service_data)
+    return jsonify(results)
+
+
 @app.route('/api/appointments', methods=['GET'])
 def get_appointments():
     appointments = db.session.query(
@@ -202,7 +263,6 @@ def book_appointment():
     # Query database to get service provider and service details
     service_provider = ServiceProviderDetails.query.filter_by(name=service_provider_name).first()
     service = ServiceDetails.query.filter_by(service_name=service_name).first()
-
     # Create new appointment record
     appointment_details = BookAppointment(
         service_provider_id=service_provider.id,
