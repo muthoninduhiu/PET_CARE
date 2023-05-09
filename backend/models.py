@@ -51,12 +51,11 @@ with app.app_context():
 
 
     class ServiceDetails(db.Model):
-        # edit table to have duration as a whole integer to represent minutes service takes
         __tablename__ = 'service_details'
         id = db.Column(db.Integer, primary_key=True)
         service_name = db.Column(db.String(120))
         service_cost = db.Column(db.Numeric(10, 2))
-        duration = db.Column(db.Integer)
+        duration = db.Column(db.Integer)  # salary = (duration/30 * pay_rate ) + service_cost
 
 
     class ServiceProviderDetails(db.Model):
@@ -68,7 +67,7 @@ with app.app_context():
         country = db.Column(db.String(50))
         email = db.Column(db.String(50))
         available = db.Column(db.Boolean)
-        pay_rate = db.Column(db.Numeric(4, 2))
+        pay_rate = db.Column(db.Numeric(4, 2))  # per 30 minutes
 
 
     class ServiceProviderSkills(db.Model):

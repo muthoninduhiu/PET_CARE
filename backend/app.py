@@ -2,7 +2,7 @@ from datetime import datetime
 
 from flask import jsonify, request
 
-from models import app, Species, PetDetails, PetOwner, db
+from models import app, Species, PetDetails, PetOwner, db, ServiceDetails, ServiceProviderDetails, BookAppointment
 
 
 # set FLASK_RUN_PORT = ''
@@ -160,3 +160,16 @@ def edit_pet(pet_id):
     finally:
         db.session.rollback()
         return jsonify({'message': 'Failed to update pet details'}), 500
+
+
+@app.route('/api/appointments', methods=['GET'])
+def get_appointments():
+    appointments = BookAppointment.query.all()
+    results = []
+    for appointment in appointments:
+
+        appointment_data = {
+
+        }
+        results.append(appointment_data)
+    return jsonify(results)
