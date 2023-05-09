@@ -3,7 +3,7 @@ from datetime import datetime
 from flask import jsonify, request
 
 from models import app, Species, PetDetails, PetOwner, db, ServiceDetails, ServiceProviderDetails, BookAppointment, \
-    ServiceProviderSkills
+    ServiceProviderSkills, OwnerDetails
 
 
 # set FLASK_RUN_PORT = ''
@@ -215,9 +215,11 @@ def get_service_details():
         service_provider = ServiceProviderDetails.query.filter_by(id=service.id).first()
         service_data = {
             'service_name': service.service_name,
-            'duration': service.duration,
-            'cost': service.service_cost,
-            'service_provider_name': service_provider.name
+            'duration': str(service.duration) + ' Minutes',
+            'cost': str(service.service_cost) + ' Ksh',
+            'service_provider_name': service_provider.name,
+            'service_provider_salary': str(float(service.service_cost) + (
+                    service.duration / 30 * service_provider.pay_rate)) + ' Ksh'
         }
         results.append(service_data)
     return jsonify(results)
@@ -229,22 +231,36 @@ def get_appointments():
         BookAppointment.apt_id,
         ServiceProviderDetails.name,
         ServiceDetails.service_name,
-        BookAppointment.appointment_date
+        BookAppointment.appointment_date,
+        PetDetails.pet_name.label('pet_name'),
+        OwnerDetails.firstname.label('owner_name'),
     ).join(
         ServiceProviderDetails,
         BookAppointment.service_provider_id == ServiceProviderDetails.id
     ).join(
         ServiceDetails,
         BookAppointment.service_id == ServiceDetails.id
+    ).join(
+        PetDetails,
+        BookAppointment.pet_id == PetDetails.id
+    ).join(
+        PetOwner,
+        PetDetails.id == PetOwner.pet_id
+    ).join(
+        OwnerDetails,
+        PetOwner.owner_id == OwnerDetails.id
     ).all()
 
     results = []
-    for apt_id, provider_name, service_name, appointment_date in appointments:
+    for pet_name, owner_name, apt_id, provider_name, service_name, appointment_date in appointments:
         appointment_data = {
             'apt_id': apt_id,
-            'provider_name': provider_name,
+            'service_provider_name': provider_name,
             'service_name': service_name,
-            'appointment_date': appointment_date.isoformat()
+            'appointment_date': appointment_date.isoformat(),
+            'pet_name': pet_name,
+            'owner_name': owner_name
+
         }
         results.append(appointment_data)
 
@@ -253,32 +269,35 @@ def get_appointments():
 
 @app.route('/api/appointments', methods=['POST'])
 def book_appointment():
-    # Extract data from request
     data = request.get_json()
-    service_provider_name = data.get('service_provider_name')
-    service_name = data.get('service_name')
+    service_provider_id = data.get('service_provider_id')
     pet_id = data.get('pet_id')
+    service_id = data.get('service_id')
     appointment_date = data.get('appointment_date')
 
-    # Query database to get service provider and service details
-    service_provider = ServiceProviderDetails.query.filter_by(name=service_provider_name).first()
-    service = ServiceDetails.query.filter_by(service_name=service_name).first()
-    # Create new appointment record
-    appointment_details = BookAppointment(
-        service_provider_id=service_provider.id,
+    new_appointment = BookAppointment(
+        service_provider_id=service_provider_id,
         pet_id=pet_id,
-        service_id=service.id,
+        service_id=service_id,
         appointment_date=appointment_date
     )
-    db.session.add(appointment_details)
+
+    db.session.add(new_appointment)
     db.session.commit()
 
-    # Return response with new appointment details
-    response = {
-        'appointment_id': appointment_details.apt_id,
-        'service_provider_name': appointment_details.service_provider.name,
-        'service_name': appointment_details.service.service_name,
-        'pet_id': appointment_details.pet_id,
-        'appointment_date': appointment_details.appointment_date.strftime('%Y-%m-%d')
-    }
-    return jsonify(response), 201
+    return jsonify({'message': 'Appointment booked successfully.'})
+
+
+@app.route('/api/<int:owner_id>/<int:pet_id>/vaccinations', methods=['GET'])
+def get_vaccinations(owner_id, pet_id):
+    owner = OwnerDetails.query.get(owner_id)
+    if not owner:
+        return jsonify({'message': 'Owner not found'}), 404
+    pet = PetDetails.query.get(pet_id)
+    if not pet:
+        return jsonify({'message': 'Pet not found'}), 404
+    vaccinations = PetOwner.query.filter_by(owner_id=owner_id, pet_id=pet_id).all()
+    return jsonify([{
+        'vaccination_date': v.vaccination_date.isoformat(),
+        'vaccine_type': v.vaccine_type,
+        } for v in vaccinations])
