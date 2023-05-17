@@ -2,13 +2,19 @@ from datetime import datetime
 
 from flask import jsonify, request
 
-from models import app, Species, PetDetails, PetOwner, db, ServiceDetails, ServiceProviderDetails, BookAppointment, \
-    ServiceProviderSkills, OwnerDetails
+from models import app, Species, PetDetails, PetOwner, db, ServiceDetails, ServiceProviderDetails, \
+                   BookAppointment, OwnerDetails
 
-
+# add a POST & PATCH for owner details
 # set FLASK_RUN_PORT = ''
+"""
+This function fetches the species data from the database and displays in on the browser
+params: None
+return value: species details
+"""
 
-@app.route('/api/species', methods=['GET'])
+
+@app.route('/api/species', functions=['GET'])
 def get_species():
     species_available = Species.query.all()
     results = []
@@ -21,7 +27,14 @@ def get_species():
     return jsonify(results)
 
 
-@app.route('/api/species', methods=['POST'])
+"""
+This function create a new species data
+params: None
+return value: new species is added to database
+"""
+
+
+@app.route('/api/species', functions=['POST'])
 def add_species():
     # Extract data from request
     data = request.get_json()
@@ -45,7 +58,14 @@ def add_species():
     return jsonify(response), 201
 
 
-@app.route('/api/species/<int:species_id>', methods=['PATCH'])
+"""
+This function edits the species data 
+params: species_id
+return value: species details updated
+"""
+
+
+@app.route('/api/species/<int:species_id>', functions=['PATCH'])
 def edit_species(species_id):
     data = request.get_json()
     print(data)
@@ -66,7 +86,14 @@ def edit_species(species_id):
         return jsonify({'message': 'Failed to update pet details'}), 500
 
 
-@app.route('/api/pet_details', methods=['GET'])
+"""
+This function fetches the pet_details data from the database and displays in on the browser
+params: None
+return value: pet details data
+"""
+
+
+@app.route('/api/pet_details', functions=['GET'])
 def get_pet_details():
     pet_details = PetDetails.query.all()
     results = []
@@ -87,7 +114,14 @@ def get_pet_details():
     return jsonify(results)
 
 
-@app.route('/api/pet_details/<int:pet_id>', methods=['GET'])
+"""
+This function searches the pets data from the database using the pet_id
+params: pet_id
+return value: pet_details if found
+"""
+
+
+@app.route('/api/pet_details/<int:pet_id>', functions=['GET'])
 def get_pet_by_id(pet_id):
     pet_detail = PetDetails.query.filter_by(id=pet_id).first()
     if not pet_detail:
@@ -110,7 +144,14 @@ def get_pet_by_id(pet_id):
     return jsonify(pet_detail_data)
 
 
-@app.route('/api/pet_details', methods=['POST'])
+"""
+This function creates a new pet details record
+params: None
+return value: new pet_details data
+"""
+
+
+@app.route('/api/pet_details', functions=['POST'])
 def add_pet():
     # Extract data from request
     data = request.get_json()
@@ -140,7 +181,14 @@ def add_pet():
     return jsonify(response), 201
 
 
-@app.route('/api/pet_details/<int:pet_id>', methods=['PATCH'])
+"""
+This function edits the pet_details data using the pet_id
+params: pet_id
+return value: new pet_detail record is added
+"""
+
+
+@app.route('/api/pet_details/<int:pet_id>', functions=['PATCH'])
 def edit_pet(pet_id):
     data = request.get_json()
     print(data)
@@ -163,8 +211,41 @@ def edit_pet(pet_id):
         return jsonify({'message': 'Failed to update pet details'}), 500
 
 
+"""
+This function fetches the service details data from the database and displays in on the browser
+params: None
+return value: service details data in JSON
+"""
+
+
+@app.route('/api/service_details', functions=['GET'])
+def get_service_details():
+    service_details = ServiceDetails.query.all()
+
+    results = []
+    for service in service_details:
+        service_provider = ServiceProviderDetails.query.filter_by(id=service.id).first()
+        service_data = {
+            'service_name': service.service_name,
+            'duration': str(service.duration) + ' Minutes',
+            'cost': str(service.service_cost) + ' Ksh',
+            'service_provider_name': service_provider.name,
+            'service_provider_salary': str(float(service.service_cost) + (
+                    service.duration / 30 * service_provider.pay_rate)) + ' Ksh'
+        }
+        results.append(service_data)
+    return jsonify(results)
+
+
+"""
+This function creates a new service_provider details
+params: None
+return value: service provider details in JSON
+"""
+
+
 # add services
-@app.route('/api/service_provider', methods=['POST'])
+@app.route('/api/service_provider', functions=['POST'])
 def add_service_provider():
     data = request.json
 
@@ -187,8 +268,15 @@ def add_service_provider():
     return jsonify({'id': service_provider.id}), 201
 
 
+"""
+This function creates a new service_details record
+params: None
+return value: service details data in JSON
+"""
+
+
 # add service provider
-@app.route('/api/service_details', methods=['POST'])
+@app.route('/api/service_details', functions=['POST'])
 def add_service_details():
     data = request.json
 
@@ -202,30 +290,18 @@ def add_service_details():
     db.session.add(service_details)
     db.session.commit()
 
-    # Return a response with the ID of the new service details
+    # Return a response with the ID of the new service 
     return jsonify({'id': service_details.id}), 201
 
 
-@app.route('/api/service_details', methods=['GET'])
-def get_service_details():
-    service_details = ServiceDetails.query.all()
-
-    results = []
-    for service in service_details:
-        service_provider = ServiceProviderDetails.query.filter_by(id=service.id).first()
-        service_data = {
-            'service_name': service.service_name,
-            'duration': str(service.duration) + ' Minutes',
-            'cost': str(service.service_cost) + ' Ksh',
-            'service_provider_name': service_provider.name,
-            'service_provider_salary': str(float(service.service_cost) + (
-                    service.duration / 30 * service_provider.pay_rate)) + ' Ksh'
-        }
-        results.append(service_data)
-    return jsonify(results)
+"""
+This function fetches the appointments in the database
+params: None
+return value: appointment details
+"""
 
 
-@app.route('/api/appointments', methods=['GET'])
+@app.route('/api/appointments', functions=['GET'])
 def get_appointments():
     appointments = db.session.query(
         BookAppointment.apt_id,
@@ -254,20 +330,26 @@ def get_appointments():
     results = []
     for pet_name, owner_name, apt_id, provider_name, service_name, appointment_date in appointments:
         appointment_data = {
-            'apt_id': apt_id,
+            # 'apt_id': apt_id,
             'service_provider_name': provider_name,
             'service_name': service_name,
             'appointment_date': appointment_date.isoformat(),
             'pet_name': pet_name,
             'owner_name': owner_name
-
         }
         results.append(appointment_data)
 
     return jsonify(results)
 
 
-@app.route('/api/appointments', methods=['POST'])
+"""
+This function creates a new appointment
+params: None
+return value: new appointment details record in jSON
+"""
+
+
+@app.route('/api/appointments', functions=['POST'])
 def book_appointment():
     data = request.get_json()
     service_provider_id = data.get('service_provider_id')
@@ -286,18 +368,18 @@ def book_appointment():
     db.session.commit()
 
     return jsonify({'message': 'Appointment booked successfully.'})
-
-
-@app.route('/api/<int:owner_id>/<int:pet_id>/vaccinations', methods=['GET'])
-def get_vaccinations(owner_id, pet_id):
-    owner = OwnerDetails.query.get(owner_id)
-    if not owner:
-        return jsonify({'message': 'Owner not found'}), 404
-    pet = PetDetails.query.get(pet_id)
-    if not pet:
-        return jsonify({'message': 'Pet not found'}), 404
-    vaccinations = PetOwner.query.filter_by(owner_id=owner_id, pet_id=pet_id).all()
-    return jsonify([{
-        'vaccination_date': v.vaccination_date.isoformat(),
-        'vaccine_type': v.vaccine_type,
-        } for v in vaccinations])
+#
+#
+# @app.route('/api/<int:owner_id>/<int:pet_id>/vaccinations', functions=['GET'])
+# def get_vaccinations(owner_id, pet_id):
+#     owner = OwnerDetails.query.get(owner_id)
+#     if not owner:
+#         return jsonify({'message': 'Owner not found'}), 404
+#     pet = PetDetails.query.get(pet_id)
+#     if not pet:
+#         return jsonify({'message': 'Pet not found'}), 404
+#     vaccinations = PetOwner.query.filter_by(owner_id=owner_id, pet_id=pet_id).all()
+#     return jsonify([{
+#         'vaccination_date': v.vaccination_date.isoformat(),
+#         'vaccine_type': v.vaccine_type,
+#     } for v in vaccinations])
