@@ -49,7 +49,7 @@ with app.app_context():
         pet_details = db.relationship('PetDetails', backref='pet_owner')
         owner_details = db.relationship('OwnerDetails', backref='pet_owner')
         vaccination_date = db.Column(db.Date)
-        vaccine_type = db.Column(db.String(50))
+        vaccination_type = db.Column(db.String(50))
 
 
     class ServiceDetails(db.Model):
