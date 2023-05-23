@@ -1,0 +1,40 @@
+/* AppDark.css */
+body {
+  background-color: #111111;
+  color: #ffffff;
+}
+
+/* Example dark mode styles */
+/*.App {
+  border: 1px solid #ffffff;
+}
+*/
+.App h1 {
+  color: #ffffff;
+}
+
+.App button {
+  background-color: #ffffff;
+  color: #333333;
+}
+
+/* Example dark mode styles */
+.navbar {
+  background-color: #111111;
+  padding: 10px;
+}
+
+.navbar a {
+  color: #ffffff;
+  text-decoration: none;
+  margin-right: 10px;
+}
+
+.navbar a:hover {
+  color: #ffffff;
+  background-color: #666666;
+  border-radius: 20%
+}
+.navbar .nav-link{
+color:#ffffff;
+}
