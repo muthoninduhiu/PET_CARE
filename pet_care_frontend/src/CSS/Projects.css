@@ -1,0 +1,28 @@
+.project-container{
+    margin-top: 15px;
+}
+
+.card {
+    height: 100%;
+    width: 100%;
+  }
+  
+  .card-img-top {
+    object-fit: cover;
+    height: 50%;
+  }
+  
+  .card-body {
+    height: 50%;
+  }
+h1{
+    color: black;
+}  
+.btn{
+    background-color: #ffe1ac;
+}
+
+.btn:hover{
+    transform: scale(1.05);
+    background-color: hsl(180, 30%, 89%);
+}

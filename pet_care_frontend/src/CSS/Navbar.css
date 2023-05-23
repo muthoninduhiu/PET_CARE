@@ -1,0 +1,11 @@
+.navbar{
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+
+}
+.pet-logo {
+  width: 55px; /* Adjust the size as needed */
+}

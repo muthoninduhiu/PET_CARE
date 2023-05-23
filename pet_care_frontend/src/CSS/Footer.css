@@ -1,0 +1,21 @@
+.footer-container {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height:35px;
+    /* background-color: #f5f5dc; */
+    display: absolute;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+  }
+   
+  .copy-right p{
+    color: #6c757d;
+    text-decoration: none;
+    font-size: 20px;
+    margin-bottom: 0;
+    margin-top: 0;
+  }
+  
