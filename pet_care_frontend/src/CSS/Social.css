@@ -1,0 +1,48 @@
+
+.social-media  a i.fab.fa-facebook-f {
+    color: #4267B2;
+    font-size: 24px;
+    margin-left: 10px;
+  }
+  .social-media a i.fab.fa-twitter{
+    color: #4267B2;
+    font-size: 24px;
+    margin-left: 10px;
+  }
+
+  .social-media a i.fab.fa-instagram{
+    color: purple;
+    font-size: 24px;
+    margin-left: 10px;
+  } 
+
+  .social-media a i.fab.fa-github{
+    color: black;
+    font-size: 24px;
+    margin-left: 10px;
+  } 
+
+  .social-media a i.fab.fa-medium{
+    font-size: 24px;
+    color: black;
+    margin-left: 10px;
+  } 
+
+  .social-media a i.fab.fa-linkedin{
+    font-size: 24px;
+    margin-left: 10px;
+    color: blue;
+  } 
+
+  .social-media a i:hover {
+    background-color: yellow;
+    color: white;
+    transition: all 0.3s ease-in-out;
+    transform: scale(1.2);
+    border-radius: 50%;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+    
+  }
+  .social-media{
+    margin-top: 20px;
+  }

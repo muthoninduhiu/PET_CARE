@@ -54,3 +54,12 @@ git commit -m "remove cached .env file from github "
 ```bash
 git push -u origin master
 ```
+## Virtual Environment
+### Installation
+```bash
+py -m venv env   
+```
+### Activation
+```bash
+.\env\Scripts\activate 
+```

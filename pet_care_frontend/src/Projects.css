@@ -1,0 +1,9 @@
+.Projects .btn {
+  border-radius: 22px;
+  padding: 6px 35px;
+  background-color: #dfedeb;
+}
+
+.Projects .card {
+  height: 218px;
+}
