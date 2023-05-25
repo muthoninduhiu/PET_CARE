@@ -1,0 +1,33 @@
+.about-us {
+  margin: 20px;
+}
+
+.staff-members {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: center; /* Add this line */
+  align-items: center; /* Add this line */
+  margin: 20px auto; /* Adjust the margin as needed */
+  }
+
+.staff-member {
+  width: 200px;
+  text-align: center;
+}
+
+.staff-member img {
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-bottom: 10px;
+}
+
+.staff-member h4 {
+  margin-bottom: 5px;
+}
+
+.staff-member p {
+  color: #888;
+}
