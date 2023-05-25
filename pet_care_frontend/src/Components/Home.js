@@ -11,16 +11,16 @@ function Home() {
       <section className="home-section">
         <h5 className="text-center">Start by exploring the following sections:</h5>
         <div className="dashboard-buttons d-flex justify-content-center">
-          <Link to="/pets" className="dashboard-button btn btn-primary">
+          <Link to="/pets" className="dashboard-button">
             View Pets
           </Link>
-          <Link to="/appointments" className="dashboard-button btn btn-primary">
+          <Link to="/appointments" className="dashboard-button ">
             View Appointments
           </Link>
-          <Link to="/services" className="dashboard-button btn btn-primary">
+          <Link to="/services" className="dashboard-button ">
             View Services
           </Link>
-          <Link to="/reports" className="dashboard-button btn btn-primary">
+          <Link to="/reports" className="dashboard-button">
             View Reports
           </Link>
         </div>
