@@ -27,9 +27,6 @@ const About = () => {
     <section className="about-us">
       <h1>About Us</h1>
       <p>
-        Welcome to our personal care system! We are dedicated to providing you with the best products and services to help you take care of yourself and enhance your well-being.
-      </p>
-      <p>
         Our team of experts is passionate about personal care and is committed to delivering high-quality solutions tailored to your needs. Whether you're looking for skincare, haircare, or general wellness products, we've got you covered.
       </p>
       <p>
