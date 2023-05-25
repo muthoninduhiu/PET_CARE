@@ -43,10 +43,10 @@ The `--reload` flag will detect file changes and restart the server automaticall
 - Create a file .gitignore in your root directory 
 - Add .env file name in that .gitignore folder.
 ```bash
-git using git rm --cached .env 
+git rm --cached .env 
 ```
 ```bash
-git add.
+git add .
 ```
 ```bash
 git commit -m "remove cached .env file from github " 
